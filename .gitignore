@@ -1,0 +1,9 @@
+dotenv/
+private_docs/
+init.sh
+about.txt
+*.pyc
+controllers/__pycache__/
+__pycache__/
+myenv/
+ssh_keys/
