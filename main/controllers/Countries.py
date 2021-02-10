@@ -12,11 +12,10 @@ class countries(Resource):
         try:
             cnxn = pyodbc.connect(app.config["CONNSTR"])
             cursor = cnxn.cursor()
-            result = cursor.execute("SELECT get_countries(?)", [id]).fetchall()
-            print(result)
-            print(cursor.description)
+            result = cursor.execute("{CALL get_countries (?)}", id).fetchall()
             columns = [e[0] for e in cursor.description]
             recordset = [dict(zip(columns, row)) for row in result]
+
             # return make_response(jsonify(recordset), 200)
             return jsonify({"countries": recordset})
 
