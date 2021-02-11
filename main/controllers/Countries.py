@@ -133,3 +133,44 @@ class countries(Resource):
             #     footer = g.getFooter(len(recordset))
             #     return jsonify({"header": header, "body": body, "footer": footer})
 
+    def delete(self, id=None):
+        cnxn = None
+        cursor = None
+
+        try:
+            cnxn = pyodbc.connect(app.config["CONNSTR"])
+            cursor = cnxn.cursor()
+            result = cursor.execute("{CALL delete_country (?)}", id).fetchall()
+            cnxn.commit()
+
+            columns = [e[0] for e in cursor.description]
+            recordset = [dict(zip(columns, row)) for row in result]
+            # record = recordset[0]
+
+            if(cursor):
+                cursor.close()
+            if(cnxn):
+                cnxn.close()
+
+        except Exception as e:
+            if(cursor):
+                cursor.close()
+            if(cnxn):
+                cnxn.close()
+            abort(500, jsonify({'msg': str(e)}))
+
+        else:
+
+            # if (record['success'] == 1):
+            # header = g.getHeader2(True, 200, record.get('message'))
+            # body = { 'response': recordset }
+            # footer = g.getFooter(len(recordset));
+            # return jsonify({"header": header, "body": body, "footer":footer})
+            # return make_response("OK", 200)
+            return jsonify({"countries": recordset})
+
+            # if (record['success'] == 0):
+            #     header = g.getHeader2(False, 409, record.get('message'))
+            #     body = {'response': recordset}
+            #     footer = g.getFooter(len(recordset))
+            #     return jsonify({"header": header, "body": body, "footer": footer})
